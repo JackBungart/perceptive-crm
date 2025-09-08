@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Add User - Internal CRM{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Add User</h1>
+<form method="post" class="w-100" style="max-width: 500px;">
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" name="username" required autofocus>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <div class="mb-3">
+        <label for="role" class="form-label">Role</label>
+        <select class="form-select" id="role" name="role" required>
+            <option value="management">Management</option>
+            <option value="engineer">Engineer</option>
+            <option value="billing">Billing</option>
+            <option value="master">Master</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-accent">Create User</button>
+    <a href="{{ url_for('list_users') }}" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+{% endblock %}

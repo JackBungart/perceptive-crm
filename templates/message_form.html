@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Send Message - Internal CRM{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Send Message to {{ contact.first_name }} {{ contact.last_name }}</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Channel</label>
+        <div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="channel" id="channelEmail" value="email" checked>
+                <label class="form-check-label" for="channelEmail">Email</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="channel" id="channelSms" value="sms">
+                <label class="form-check-label" for="channelSms">SMS</label>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3" id="subjectGroup">
+        <label for="subject" class="form-label">Subject</label>
+        <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter a subject line">
+    </div>
+    <div class="mb-3">
+        <label for="body" class="form-label">Message</label>
+        <textarea class="form-control" id="body" name="body" rows="5" required></textarea>
+    </div>
+
+    <!-- Scheduling options (for email only) -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label for="start_at" class="form-label">Send at</label>
+            <input type="datetime-local" class="form-control" id="start_at" name="start_at">
+            <div class="form-text">Leave blank to send immediately.</div>
+        </div>
+        <div class="col-md-6">
+            <label for="end_at" class="form-label">End date</label>
+            <input type="datetime-local" class="form-control" id="end_at" name="end_at">
+            <div class="form-text">For recurring emails. Leave blank for no end.</div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-check mt-4">
+                <input class="form-check-input" type="checkbox" id="recurring" name="recurring">
+                <label class="form-check-label" for="recurring">Repeat daily</label>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <a href="{{ url_for('view_contact', contact_id=contact.id) }}" class="btn btn-secondary">Cancel</a>
+        <div>
+            <button type="submit" name="send_test" value="1" class="btn btn-outline-secondary me-2">Send Test</button>
+            <button type="submit" class="btn btn-accent">Send</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    // Show/hide subject field based on channel selection
+    const emailRadio = document.getElementById('channelEmail');
+    const smsRadio = document.getElementById('channelSms');
+    const subjectGroup = document.getElementById('subjectGroup');
+    const scheduleRows = document.querySelectorAll('[name="start_at"], [name="end_at"], [name="recurring"]');
+
+    function toggleFields() {
+        if (emailRadio.checked) {
+            subjectGroup.style.display = 'block';
+            scheduleRows.forEach(el => el.closest('.col-md-6')?.classList.remove('d-none'));
+        } else {
+            subjectGroup.style.display = 'none';
+            scheduleRows.forEach(el => el.closest('.col-md-6')?.classList.add('d-none'));
+        }
+    }
+    emailRadio.addEventListener('change', toggleFields);
+    smsRadio.addEventListener('change', toggleFields);
+    document.addEventListener('DOMContentLoaded', toggleFields);
+</script>
+{% endblock %}

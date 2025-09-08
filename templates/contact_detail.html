@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}{{ contact.first_name }} {{ contact.last_name }} - Internal CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">{{ contact.first_name }} {{ contact.last_name }}</h1>
+    <div>
+        <a href="{{ url_for('send_message_route', contact_id=contact.id) }}" class="btn btn-accent me-2">Send Message</a>
+        <a href="{{ url_for('edit_contact', contact_id=contact.id) }}" class="btn btn-outline-primary me-2">Edit</a>
+        <form action="{{ url_for('delete_contact', contact_id=contact.id) }}" method="post" class="d-inline" onsubmit="return confirm('Delete this contact?');">
+            <button type="submit" class="btn btn-outline-danger">Delete</button>
+        </form>
+        {% if g.user and g.user.role.lower() in ['master','management'] %}
+        <form action="{{ url_for('generate_summary', contact_id=contact.id) }}" method="post" class="d-inline ms-2" onsubmit="return confirm('Generate a new summary document?');">
+            <button type="submit" class="btn btn-outline-secondary">Generate Summary</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Contact Details</div>
+            <div class="card-body">
+                <p><strong>Email:</strong> {{ contact.email }}</p>
+                <p><strong>Phone:</strong> {{ contact.phone or '—' }}</p>
+                <p><strong>Company:</strong> {{ contact.company or '—' }}</p>
+                <p><strong>Address:</strong> {{ contact.address or '—' }}</p>
+                <p><strong>Notes:</strong><br>{{ contact.notes or '—' }}</p>
+                <p><small class="text-muted">Added on {{ contact.created_at.strftime('%Y-%m-%d') }}</small></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Message History</div>
+            <div class="card-body">
+                {% if contact.messages %}
+                <ul class="list-group list-group-flush">
+                    {% for message in contact.messages|sort(attribute='sent_at', reverse=True) %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>{{ message.channel|capitalize }}</strong>
+                                {% if message.channel == 'email' and message.subject %}
+                                    — {{ message.subject }}
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">{{ message.sent_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        <p class="mb-1">{{ message.body }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No messages have been sent to this contact yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Pipeline details -->
+    <div class="col-md-6 mt-4">
+        <div class="card">
+            <div class="card-header">Financial Pipeline</div>
+            <div class="card-body">
+                <p><strong>Potential Spend:</strong> ${{ '%.2f'|format(contact.potential_spend) }}</p>
+                <p><strong>Accepted Spend:</strong> ${{ '%.2f'|format(contact.accepted_spend) }}</p>
+                <p><strong>Billed Amount:</strong> ${{ '%.2f'|format(contact.billed_amount) }}</p>
+                <p><strong>Received Amount:</strong> ${{ '%.2f'|format(contact.received_amount) }}</p>
+                <p><strong>Rating (1–10):</strong> {{ contact.rating }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

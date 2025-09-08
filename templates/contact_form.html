@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{% if contact %}Edit Contact{% else %}Add Contact{% endif %} - Internal CRM{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">{% if contact %}Edit Contact{% else %}Add Contact{% endif %}</h1>
+
+<form method="post">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="first_name" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ contact.first_name if contact else '' }}" required>
+        </div>
+        <div class="col-md-6">
+            <label for="last_name" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ contact.last_name if contact else '' }}" required>
+        </div>
+        <div class="col-md-6">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ contact.email if contact else '' }}" required>
+        </div>
+        <div class="col-md-6">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="text" class="form-control" id="phone" name="phone" value="{{ contact.phone if contact else '' }}">
+        </div>
+        <div class="col-md-6">
+            <label for="company" class="form-label">Company</label>
+            <input type="text" class="form-control" id="company" name="company" value="{{ contact.company if contact else '' }}">
+        </div>
+        <div class="col-md-6">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" name="address" value="{{ contact.address if contact else '' }}">
+        </div>
+        <div class="col-12">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea class="form-control" id="notes" name="notes" rows="3">{{ contact.notes if contact else '' }}</textarea>
+        </div>
+
+        <!-- Sales pipeline fields -->
+        <div class="col-md-4">
+            <label for="potential_spend" class="form-label">Potential Spend ($)</label>
+            <input type="number" step="0.01" class="form-control" id="potential_spend" name="potential_spend" value="{{ contact.potential_spend if contact else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label for="accepted_spend" class="form-label">Accepted Spend ($)</label>
+            <input type="number" step="0.01" class="form-control" id="accepted_spend" name="accepted_spend" value="{{ contact.accepted_spend if contact else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label for="billed_amount" class="form-label">Billed Amount ($)</label>
+            <input type="number" step="0.01" class="form-control" id="billed_amount" name="billed_amount" value="{{ contact.billed_amount if contact else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label for="received_amount" class="form-label">Received Amount ($)</label>
+            <input type="number" step="0.01" class="form-control" id="received_amount" name="received_amount" value="{{ contact.received_amount if contact else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label for="rating" class="form-label">Rating (1–10)</label>
+            <input type="number" min="1" max="10" step="1" class="form-control" id="rating" name="rating" value="{{ contact.rating if contact else '' }}">
+        </div>
+    </div>
+    <div class="mt-4 d-flex justify-content-between">
+        <a href="{{ url_for('list_contacts') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-accent">Save</button>
+    </div>
+</form>
+{% endblock %}
